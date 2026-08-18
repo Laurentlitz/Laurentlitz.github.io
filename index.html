@@ -773,6 +773,131 @@ body{
   }
 }
 
+
+/* V9.6 — Login/Register as normal document flow (no fixed overlay) */
+.authScreen{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:100vh!important;
+  min-height:100dvh!important;
+  padding:28px 20px!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  overflow:visible!important;
+  background:var(--bg)!important;
+}
+
+/* While authentication is visible, remove the application from document flow. */
+.authScreen:not(.hidden) + .app{
+  display:none!important;
+}
+
+.authWrap{
+  width:min(980px,100%)!important;
+  height:auto!important;
+  min-height:620px!important;
+  max-height:none!important;
+  margin:0 auto!important;
+  overflow:visible!important;
+  display:grid!important;
+  grid-template-columns:1.05fr .95fr!important;
+  align-items:stretch!important;
+}
+
+.authIntro{
+  min-height:620px!important;
+  height:auto!important;
+  overflow:visible!important;
+}
+
+.authPanel{
+  touch-action:auto!important;
+  min-height:620px!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+  display:block!important;
+  padding:30px 38px 42px!important;
+}
+
+.authTabs{
+  position:relative!important;
+  top:auto!important;
+  z-index:auto!important;
+  box-shadow:none!important;
+}
+
+/* Make the registration page compact enough while preserving natural document scroll */
+#registerPane .formGroup{
+  margin-bottom:12px!important;
+}
+#registerPane .formControl{
+  padding-top:10px!important;
+  padding-bottom:10px!important;
+}
+
+/* Ensure the browser itself owns vertical scrolling */
+html,
+body{
+  height:auto!important;
+  min-height:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+
+body.auth-open{
+  overflow-y:auto!important;
+  height:auto!important;
+}
+
+/* Mobile remains a one-column, naturally scrollable page */
+@media(max-width:800px){
+  .authScreen{
+    display:block!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
+  .authWrap{
+    display:block!important;
+    width:100%!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    border-radius:0!important;
+  }
+  .authIntro{
+    display:none!important;
+  }
+  .authPanel{
+    width:100%!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+    height:auto!important;
+    max-height:none!important;
+    overflow:visible!important;
+    padding:28px 22px calc(46px + env(safe-area-inset-bottom))!important;
+    padding-top:calc(28px + env(safe-area-inset-top))!important;
+  }
+}
+
+
+/* V9.7 — definitive auth/login fix */
+.authScreen.hidden{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+body.authenticated .authScreen{
+  display:none!important;
+}
+
 </style>
 </head>
 <body>
@@ -1687,14 +1812,27 @@ function switchAuth(mode){
   $("#loginPane").classList.toggle("hidden",!l);
   $("#registerPane").classList.toggle("hidden",l);
   clearAuthMessages();
-  const panel=document.querySelector(".authPanel");
-  const screen=$("#authScreen");
-  if(panel)panel.scrollTop=0;
-  if(screen)screen.scrollTop=0;
+  window.scrollTo(0,0);
 }
 function authMessage(id,text,type){const e=$("#"+id);e.textContent=text;e.className="authMessage "+type}
-function showAuth(mode){$("#authScreen").classList.remove("hidden");switchAuth(mode||"login")}
-function hideAuth(){$("#authScreen").classList.add("hidden")}
+function showAuth(mode){
+  document.body.classList.remove("authenticated");
+  document.body.classList.add("auth-open");
+  const screen=$("#authScreen");
+  screen.classList.remove("hidden");
+  screen.setAttribute("aria-hidden","false");
+  switchAuth(mode||"login");
+  window.scrollTo(0,0);
+}
+function hideAuth(){
+  const screen=$("#authScreen");
+  screen.classList.add("hidden");
+  screen.setAttribute("aria-hidden","true");
+  document.body.classList.remove("auth-open");
+  document.body.classList.add("authenticated");
+  restorePageScroll();
+  window.scrollTo(0,0);
+}
 function updateUserUI(){
   if(!state.currentUser)return;
   const u=state.currentUser;
@@ -1713,9 +1851,96 @@ function updateUserUI(){
     const el=$("#"+id); if(el)el.textContent=u.email||u.username;
   });
 }
-function doRegister(){clearAuthMessages();const name=$("#regName").value.trim(),partner=$("#regPartner").value.trim(),username=$("#regUser").value.trim(),email=$("#regEmail").value.trim(),pass=$("#regPass").value,pass2=$("#regPass2").value,key=normalizeUser(username);if(name.length<2)return authMessage("registerMessage","Ingrese su nombre completo.","error");if(username.length<4)return authMessage("registerMessage","El usuario debe tener al menos 4 caracteres.","error");if(!/^[a-zA-Z0-9._-]+$/.test(username))return authMessage("registerMessage","El usuario contiene caracteres no permitidos.","error");if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return authMessage("registerMessage","Ingrese un correo válido.","error");if(pass.length<6)return authMessage("registerMessage","La contraseña debe tener al menos 6 caracteres.","error");if(pass!==pass2)return authMessage("registerMessage","Las contraseñas no coinciden.","error");const users=getUsers();if(users[key])return authMessage("registerMessage","Ese usuario ya existe en este dispositivo.","error");if(email&&Object.values(users).some(u=>normalizeUser(u.email)===normalizeUser(email)))return authMessage("registerMessage","Ese correo ya está registrado.","error");users[key]={username,name,partner:partner||"Sin partner",email,passHash:simpleHash(pass),createdAt:new Date().toISOString()};saveUsers(users);authMessage("registerMessage","Cuenta creada. Ya puede iniciar sesión.","success");setTimeout(()=>{switchAuth("login");$("#loginUser").value=username},650)}
-function doLogin(){clearAuthMessages();const login=$("#loginUser").value.trim(),pass=$("#loginPass").value;if(!login||!pass)return authMessage("loginMessage","Ingrese usuario/correo y contraseña.","error");const users=getUsers(),key=normalizeUser(login);let u=users[key]||Object.values(users).find(x=>normalizeUser(x.email)===key);if(!u||u.passHash!==simpleHash(pass))return authMessage("loginMessage","Usuario/correo o contraseña incorrectos.","error");state.currentUser=u;setStored("osp-session",u.username);loadUserScores();updateUserUI();renderRecommended();renderCases();updateStats();hideAuth();restorePageScroll();$("#loginPass").value=""}
-function logout(){closeAccountMenus();closeRole();removeStored("osp-session");state.currentUser=null;state.scores={};showAuth("login")}
+function enterApplication(user){
+  if(!user)return false;
+  state.currentUser=user;
+  setStored("osp-session",user.username);
+  loadUserScores();
+  updateUserUI();
+  renderRecommended();
+  renderCases();
+  updateStats();
+  go("home");
+  hideAuth();
+  return true;
+}
+function doRegister(){
+  clearAuthMessages();
+
+  const name=$("#regName").value.trim();
+  const partner=$("#regPartner").value.trim();
+  const username=$("#regUser").value.trim();
+  const email=$("#regEmail").value.trim();
+  const pass=$("#regPass").value;
+  const pass2=$("#regPass2").value;
+  const key=normalizeUser(username);
+
+  if(name.length<2)return authMessage("registerMessage","Ingrese su nombre completo.","error");
+  if(username.length<4)return authMessage("registerMessage","El usuario debe tener al menos 4 caracteres.","error");
+  if(!/^[a-zA-Z0-9._-]+$/.test(username))return authMessage("registerMessage","El usuario contiene caracteres no permitidos.","error");
+  if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return authMessage("registerMessage","Ingrese un correo válido.","error");
+  if(pass.length<6)return authMessage("registerMessage","La contraseña debe tener al menos 6 caracteres.","error");
+  if(pass!==pass2)return authMessage("registerMessage","Las contraseñas no coinciden.","error");
+
+  const users=getUsers();
+  if(users[key])return authMessage("registerMessage","Ese usuario ya existe en este dispositivo.","error");
+  if(email&&Object.values(users).some(u=>normalizeUser(u.email)===normalizeUser(email)))
+    return authMessage("registerMessage","Ese correo ya está registrado.","error");
+
+  const newUser={
+    username:username,
+    name:name,
+    partner:partner||"Sin partner",
+    email:email,
+    passHash:simpleHash(pass),
+    createdAt:new Date().toISOString()
+  };
+
+  users[key]=newUser;
+  saveUsers(users);
+
+  const persisted=getUsers()[key];
+  if(!persisted){
+    return authMessage(
+      "registerMessage",
+      "No fue posible guardar la cuenta en este navegador.",
+      "error"
+    );
+  }
+
+  enterApplication(persisted);
+}
+function doLogin(){
+  clearAuthMessages();
+
+  const login=$("#loginUser").value.trim();
+  const pass=$("#loginPass").value;
+
+  if(!login||!pass)
+    return authMessage("loginMessage","Ingrese usuario/correo y contraseña.","error");
+
+  const users=getUsers();
+  const key=normalizeUser(login);
+
+  let user=users[key]||Object.values(users).find(
+    u=>normalizeUser(u.email)===key
+  );
+
+  if(!user||user.passHash!==simpleHash(pass))
+    return authMessage("loginMessage","Usuario/correo o contraseña incorrectos.","error");
+
+  $("#loginPass").value="";
+  enterApplication(user);
+}
+function logout(){
+  closeAccountMenus();
+  closeRole();
+  removeStored("osp-session");
+  state.currentUser=null;
+  state.scores={};
+  document.body.classList.remove("authenticated");
+  showAuth("login");
+}
 function togglePassword(id){const e=$("#"+id);e.type=e.type==="password"?"text":"password"}
 
 
@@ -1760,10 +1985,11 @@ function toggleSidebar(){
 }
 
 function restorePageScroll(){
- document.documentElement.style.overflowY="auto";
- document.body.style.overflowY="auto";
- document.body.style.overflowX="hidden";
- document.body.style.height="auto";
+  document.documentElement.style.height="auto";
+  document.documentElement.style.overflowY="auto";
+  document.body.style.height="auto";
+  document.body.style.overflowY="auto";
+  document.body.style.overflowX="hidden";
 }
 
 function init(){
