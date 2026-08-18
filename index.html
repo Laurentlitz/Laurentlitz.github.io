@@ -1302,6 +1302,66 @@ body[data-session-state="authenticated"] #authScreen{
   }
 }
 
+
+/* V9.11 — fixed full-height desktop sidebar */
+@media(min-width:861px){
+  .app{
+    display:block!important;
+    min-height:100vh!important;
+  }
+
+  .sidebar{
+    position:fixed!important;
+    top:0!important;
+    left:0!important;
+    bottom:0!important;
+    height:100vh!important;
+    min-height:100vh!important;
+    max-height:100vh!important;
+    width:var(--sidebar-w)!important;
+    z-index:70!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    background:var(--nav)!important;
+    transition:width .22s ease,padding .22s ease!important;
+  }
+
+  .main{
+    margin-left:var(--sidebar-w)!important;
+    width:calc(100% - var(--sidebar-w))!important;
+    max-width:none!important;
+    min-height:100vh!important;
+    transition:margin-left .22s ease,width .22s ease!important;
+  }
+
+  html[data-sidebar="collapsed"] .sidebar{
+    width:var(--sidebar-w-collapsed)!important;
+  }
+
+  html[data-sidebar="collapsed"] .main{
+    margin-left:var(--sidebar-w-collapsed)!important;
+    width:calc(100% - var(--sidebar-w-collapsed))!important;
+  }
+}
+
+/* Mobile keeps the existing mobile navigation behavior */
+@media(max-width:860px){
+  .app{
+    display:block!important;
+  }
+  .sidebar{
+    position:static!important;
+    width:auto!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+  }
+  .main{
+    margin-left:0!important;
+    width:100%!important;
+  }
+}
+
 </style>
 </head>
 <body>
