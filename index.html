@@ -571,6 +571,79 @@ html[data-sidebar="collapsed"] .sidebarHint{
   }
 }
 
+
+/* V9.4 — robust scrolling for GitHub Pages, PC and Android */
+html{
+  min-height:100%;
+  height:auto;
+  overflow-x:hidden;
+  overflow-y:auto;
+  scroll-behavior:smooth;
+}
+body{
+  min-height:100vh;
+  height:auto;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.app{
+  min-height:100vh;
+  height:auto;
+}
+.main{
+  min-height:100vh;
+  height:auto;
+  overflow:visible;
+}
+.sidebar{
+  max-height:100vh;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+}
+.sidebar::-webkit-scrollbar{width:6px}
+.sidebar::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.14);
+  border-radius:999px;
+}
+.authScreen{
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+}
+.authWrap{
+  margin:auto;
+}
+.modalBg{
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.modal{
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+}
+@media(max-width:860px){
+  html,body{
+    min-height:100%;
+    height:auto;
+    overflow-y:auto;
+  }
+  .main{
+    min-height:100vh;
+    overflow:visible;
+  }
+  .authScreen{
+    align-items:flex-start;
+  }
+  .authWrap{
+    min-height:100vh;
+    margin:0;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1421,9 +1494,9 @@ function shuffle(arr){
 function openRole(id){
  const c=cases.find(x=>x.id===id);if(!c)return;
  state.role=c;state.round=0;state.score=0;state.answered=false;state.shuffled=shuffle(c.rounds[0].a);
- $("#roleModal").classList.remove("hidden");document.body.style.overflow="hidden";renderRole();
+ $("#roleModal").classList.remove("hidden");renderRole();
 }
-function closeRole(){$("#roleModal").classList.add("hidden");document.body.style.overflow=""}
+function closeRole(){$("#roleModal").classList.add("hidden");restorePageScroll()}
 function renderRole(){
  const c=state.role,r=c.rounds[state.round];
  $("#roleKicker").textContent=c.category+" · "+c.level;$("#roleTitle").textContent=c.title;$("#roleMeta").textContent=(state.round+1)+" de "+c.rounds.length+" · "+state.score+" puntos";
@@ -1473,15 +1546,15 @@ function answerQuick(v,btn){
 
 function printView(v){
  const el=$("#view-"+v);if(!el)return;
- el.classList.add("printTarget");setTimeout(()=>window.print(),80);setTimeout(()=>el.classList.remove("printTarget"),500);
+ el.classList.add("printTarget");setTimeout(()=>window.print(),80);setTimeout(()=>{el.classList.remove("printTarget");restorePageScroll()},500);
 }
 
 
 function clearAuthMessages(){["loginMessage","registerMessage"].forEach(id=>{const e=$("#"+id);e.classList.add("hidden");e.textContent=""})}
 function switchAuth(mode){const l=mode==="login";$("#loginTab").classList.toggle("active",l);$("#registerTab").classList.toggle("active",!l);$("#loginPane").classList.toggle("hidden",!l);$("#registerPane").classList.toggle("hidden",l);clearAuthMessages()}
 function authMessage(id,text,type){const e=$("#"+id);e.textContent=text;e.className="authMessage "+type}
-function showAuth(mode){$("#authScreen").classList.remove("hidden");document.body.style.overflow="hidden";switchAuth(mode||"login")}
-function hideAuth(){$("#authScreen").classList.add("hidden");document.body.style.overflow=""}
+function showAuth(mode){$("#authScreen").classList.remove("hidden");switchAuth(mode||"login")}
+function hideAuth(){$("#authScreen").classList.add("hidden")}
 function updateUserUI(){
   if(!state.currentUser)return;
   const u=state.currentUser;
@@ -1501,7 +1574,7 @@ function updateUserUI(){
   });
 }
 function doRegister(){clearAuthMessages();const name=$("#regName").value.trim(),partner=$("#regPartner").value.trim(),username=$("#regUser").value.trim(),email=$("#regEmail").value.trim(),pass=$("#regPass").value,pass2=$("#regPass2").value,key=normalizeUser(username);if(name.length<2)return authMessage("registerMessage","Ingrese su nombre completo.","error");if(username.length<4)return authMessage("registerMessage","El usuario debe tener al menos 4 caracteres.","error");if(!/^[a-zA-Z0-9._-]+$/.test(username))return authMessage("registerMessage","El usuario contiene caracteres no permitidos.","error");if(email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))return authMessage("registerMessage","Ingrese un correo válido.","error");if(pass.length<6)return authMessage("registerMessage","La contraseña debe tener al menos 6 caracteres.","error");if(pass!==pass2)return authMessage("registerMessage","Las contraseñas no coinciden.","error");const users=getUsers();if(users[key])return authMessage("registerMessage","Ese usuario ya existe en este dispositivo.","error");if(email&&Object.values(users).some(u=>normalizeUser(u.email)===normalizeUser(email)))return authMessage("registerMessage","Ese correo ya está registrado.","error");users[key]={username,name,partner:partner||"Sin partner",email,passHash:simpleHash(pass),createdAt:new Date().toISOString()};saveUsers(users);authMessage("registerMessage","Cuenta creada. Ya puede iniciar sesión.","success");setTimeout(()=>{switchAuth("login");$("#loginUser").value=username},650)}
-function doLogin(){clearAuthMessages();const login=$("#loginUser").value.trim(),pass=$("#loginPass").value;if(!login||!pass)return authMessage("loginMessage","Ingrese usuario/correo y contraseña.","error");const users=getUsers(),key=normalizeUser(login);let u=users[key]||Object.values(users).find(x=>normalizeUser(x.email)===key);if(!u||u.passHash!==simpleHash(pass))return authMessage("loginMessage","Usuario/correo o contraseña incorrectos.","error");state.currentUser=u;setStored("osp-session",u.username);loadUserScores();updateUserUI();renderRecommended();renderCases();updateStats();hideAuth();$("#loginPass").value=""}
+function doLogin(){clearAuthMessages();const login=$("#loginUser").value.trim(),pass=$("#loginPass").value;if(!login||!pass)return authMessage("loginMessage","Ingrese usuario/correo y contraseña.","error");const users=getUsers(),key=normalizeUser(login);let u=users[key]||Object.values(users).find(x=>normalizeUser(x.email)===key);if(!u||u.passHash!==simpleHash(pass))return authMessage("loginMessage","Usuario/correo o contraseña incorrectos.","error");state.currentUser=u;setStored("osp-session",u.username);loadUserScores();updateUserUI();renderRecommended();renderCases();updateStats();hideAuth();restorePageScroll();$("#loginPass").value=""}
 function logout(){closeAccountMenus();closeRole();removeStored("osp-session");state.currentUser=null;state.scores={};showAuth("login")}
 function togglePassword(id){const e=$("#"+id);e.type=e.type==="password"?"text":"password"}
 
@@ -1546,7 +1619,15 @@ function toggleSidebar(){
   applySidebarState();
 }
 
+function restorePageScroll(){
+ document.documentElement.style.overflowY="auto";
+ document.body.style.overflowY="auto";
+ document.body.style.overflowX="hidden";
+ document.body.style.height="auto";
+}
+
 function init(){
+ restorePageScroll();
  $("#loginTab").onclick=()=>switchAuth("login");$("#registerTab").onclick=()=>switchAuth("register");$("#loginSubmit").onclick=doLogin;$("#registerSubmit").onclick=doRegister;
  $("#loginPass").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});$("#regPass2").addEventListener("keydown",e=>{if(e.key==="Enter")doRegister()});
  $("#sidebarToggle").onclick=toggleSidebar;
