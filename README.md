@@ -1,15 +1,21 @@
-# Oracle Sales Play Academy
+ORACLE SALES PLAY ACADEMY — V9.9 PROGRESS DASHBOARD
 
-Versión preparada para GitHub Pages.
+Mejoras en Mi progreso:
+- Dashboard de avance general.
+- Barra de progreso global.
+- Nivel y puntos acumulados.
+- Completados, pendientes, promedio y mejor resultado.
+- Progreso por categoría.
+- Lista de Sales Plays ordenada: completados primero y por mejor puntaje.
+- Nombre del usuario integrado al dashboard.
+- Indicador del siguiente nivel.
 
-## Archivos
+Reiniciar progreso:
+- Se eliminó del encabezado principal.
+- Ahora está al final de Mi progreso.
+- Muestra una confirmación propia antes de borrar.
+- Solo borra el progreso del usuario actual.
+- No elimina la cuenta.
 
-- `index.html`: sitio principal para GitHub Pages.
-- `offline.html`: copia que puede descargarse y abrirse localmente.
-- `.nojekyll`: evita procesamiento innecesario de Jekyll.
-
-## Publicar en GitHub Pages
-
-Repositorio recomendado:
-
-`Laurentlitz/Laurentlitz.github.io`
+GitHub Pages:
+Reemplace index.html por esta versión.
