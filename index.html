@@ -898,6 +898,20 @@ body.authenticated .authScreen{
   display:none!important;
 }
 
+
+/* V9.8 — deterministic auth state */
+body[data-session-state="guest"] .app{
+  display:none!important;
+}
+body[data-session-state="authenticated"] #authScreen{
+  display:none!important;
+}
+.authScreen.force-hidden{
+  display:none!important;
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+
 </style>
 </head>
 <body>
@@ -1654,7 +1668,37 @@ let state={view:"home",filter:"all",scores:{},theme:getStored("osp-theme","dark"
 function scoreStorageKey(){return "osp-scores-"+(state.currentUser?normalizeUser(state.currentUser.username):"anonymous")}
 function loadUserScores(){if(!state.currentUser){state.scores={};return}try{state.scores=JSON.parse(getStored(scoreStorageKey(),"{}")||"{}")}catch(e){state.scores={}}}
 function saveScores(){if(state.currentUser)setStored(scoreStorageKey(),JSON.stringify(state.scores))}
-function loadSession(){const s=getStored("osp-session","");if(!s)return false;const u=getUsers()[normalizeUser(s)];if(!u){removeStored("osp-session");return false}state.currentUser=u;loadUserScores();return true}
+function getSessionName(){
+  let s=getStored("osp-session","");
+  if(!s){
+    try{s=sessionStorage.getItem("osp-session-backup")||""}catch(e){}
+  }
+  return s;
+}
+function persistSession(username){
+  setStored("osp-session",username);
+  try{sessionStorage.setItem("osp-session-backup",username)}catch(e){}
+}
+function clearSession(){
+  removeStored("osp-session");
+  try{sessionStorage.removeItem("osp-session-backup")}catch(e){}
+}
+function loadSession(){
+  const s=getSessionName();
+  if(!s)return false;
+
+  const users=getUsers();
+  const u=users[normalizeUser(s)];
+
+  if(!u){
+    clearSession();
+    return false;
+  }
+
+  state.currentUser=u;
+  loadUserScores();
+  return true;
+}
 document.documentElement.setAttribute("data-theme",state.theme);
 document.documentElement.setAttribute("data-sidebar",state.sidebar);
 
@@ -1816,20 +1860,49 @@ function switchAuth(mode){
 }
 function authMessage(id,text,type){const e=$("#"+id);e.textContent=text;e.className="authMessage "+type}
 function showAuth(mode){
+  document.body.setAttribute("data-session-state","guest");
   document.body.classList.remove("authenticated");
   document.body.classList.add("auth-open");
+
   const screen=$("#authScreen");
-  screen.classList.remove("hidden");
-  screen.setAttribute("aria-hidden","false");
+  const app=document.querySelector(".app");
+
+  if(screen){
+    screen.classList.remove("hidden","force-hidden");
+    screen.style.removeProperty("display");
+    screen.style.removeProperty("visibility");
+    screen.style.removeProperty("pointer-events");
+    screen.setAttribute("aria-hidden","false");
+  }
+
+  if(app){
+    app.style.setProperty("display","none","important");
+  }
+
   switchAuth(mode||"login");
+  restorePageScroll();
   window.scrollTo(0,0);
 }
 function hideAuth(){
-  const screen=$("#authScreen");
-  screen.classList.add("hidden");
-  screen.setAttribute("aria-hidden","true");
+  document.body.setAttribute("data-session-state","authenticated");
   document.body.classList.remove("auth-open");
   document.body.classList.add("authenticated");
+
+  const screen=$("#authScreen");
+  const app=document.querySelector(".app");
+
+  if(screen){
+    screen.classList.add("hidden","force-hidden");
+    screen.style.setProperty("display","none","important");
+    screen.style.setProperty("visibility","hidden","important");
+    screen.style.setProperty("pointer-events","none","important");
+    screen.setAttribute("aria-hidden","true");
+  }
+
+  if(app){
+    app.style.removeProperty("display");
+  }
+
   restorePageScroll();
   window.scrollTo(0,0);
 }
@@ -1851,18 +1924,38 @@ function updateUserUI(){
     const el=$("#"+id); if(el)el.textContent=u.email||u.username;
   });
 }
-function enterApplication(user){
+function enterApplication(user,messageId){
   if(!user)return false;
-  state.currentUser=user;
-  setStored("osp-session",user.username);
-  loadUserScores();
-  updateUserUI();
-  renderRecommended();
-  renderCases();
-  updateStats();
-  go("home");
-  hideAuth();
-  return true;
+
+  try{
+    state.currentUser=user;
+    persistSession(user.username);
+
+    const check=getSessionName();
+    if(normalizeUser(check)!==normalizeUser(user.username)){
+      throw new Error("No se pudo conservar la sesión en el navegador.");
+    }
+
+    if(messageId){
+      authMessage(messageId,"Acceso correcto. Abriendo la academia...","success");
+    }
+
+    setTimeout(function(){
+      window.location.reload();
+    },180);
+
+    return true;
+  }catch(err){
+    console.error("Login error:",err);
+    if(messageId){
+      authMessage(
+        messageId,
+        "La cuenta es correcta, pero no fue posible iniciar la sesión: "+err.message,
+        "error"
+      );
+    }
+    return false;
+  }
 }
 function doRegister(){
   clearAuthMessages();
@@ -1908,7 +2001,7 @@ function doRegister(){
     );
   }
 
-  enterApplication(persisted);
+  enterApplication(persisted,"registerMessage");
 }
 function doLogin(){
   clearAuthMessages();
@@ -1930,16 +2023,15 @@ function doLogin(){
     return authMessage("loginMessage","Usuario/correo o contraseña incorrectos.","error");
 
   $("#loginPass").value="";
-  enterApplication(user);
+  enterApplication(user,"loginMessage");
 }
 function logout(){
   closeAccountMenus();
   closeRole();
-  removeStored("osp-session");
+  clearSession();
   state.currentUser=null;
   state.scores={};
-  document.body.classList.remove("authenticated");
-  showAuth("login");
+  window.location.reload();
 }
 function togglePassword(id){const e=$("#"+id);e.type=e.type==="password"?"text":"password"}
 
@@ -2015,8 +2107,24 @@ function init(){
  $("#printCheat").onclick=()=>printView("cheat");$("#printProgress").onclick=()=>printView("progress");
  renderAcademy();renderPortfolio();renderCheat();renderQuick();applySidebarState();
  const hasSession=loadSession();
- if(hasSession){updateUserUI();renderRecommended();renderCases();updateStats();go("home");hideAuth()}
- else{state.scores={};renderRecommended();renderCases();updateStats();go("home");showAuth("login")}
+
+ if(hasSession){
+   document.body.setAttribute("data-session-state","authenticated");
+   hideAuth();
+   updateUserUI();
+   renderRecommended();
+   renderCases();
+   updateStats();
+   go("home");
+ }else{
+   document.body.setAttribute("data-session-state","guest");
+   state.scores={};
+   renderRecommended();
+   renderCases();
+   updateStats();
+   go("home");
+   showAuth("login");
+ }
 }
 init();
 </script>
