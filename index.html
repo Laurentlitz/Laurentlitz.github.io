@@ -644,6 +644,135 @@ body{
   }
 }
 
+
+/* V9.5 — definitive Login/Register scrolling fix */
+.authScreen{
+  position:fixed!important;
+  inset:0!important;
+  width:100%!important;
+  height:100vh!important;
+  height:100dvh!important;
+  min-height:0!important;
+  padding:20px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  overflow:hidden!important;
+}
+
+.authWrap{
+  width:min(980px,100%)!important;
+  height:min(720px,calc(100vh - 40px))!important;
+  height:min(720px,calc(100dvh - 40px))!important;
+  min-height:0!important;
+  max-height:calc(100vh - 40px)!important;
+  max-height:calc(100dvh - 40px)!important;
+  margin:0 auto!important;
+  overflow:hidden!important;
+  display:grid!important;
+  grid-template-columns:1.05fr .95fr!important;
+}
+
+.authIntro{
+  min-height:0!important;
+  height:100%!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+}
+
+.authPanel{
+  touch-action:pan-y!important;
+  min-height:0!important;
+  height:100%!important;
+  max-height:100%!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  display:block!important;
+  padding:30px 38px 38px!important;
+  overscroll-behavior:contain!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-width:thin;
+}
+
+.authPanel::-webkit-scrollbar,
+.authIntro::-webkit-scrollbar{
+  width:7px;
+}
+.authPanel::-webkit-scrollbar-thumb,
+.authIntro::-webkit-scrollbar-thumb{
+  background:var(--border);
+  border-radius:999px;
+}
+.authPanel::-webkit-scrollbar-track,
+.authIntro::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+.authTabs{
+  position:sticky;
+  top:-1px;
+  z-index:4;
+  background:var(--surface2);
+  box-shadow:0 8px 18px var(--surface);
+}
+
+#loginPane,
+#registerPane{
+  padding-bottom:12px;
+}
+
+/* Make registration slightly more compact without sacrificing readability */
+#registerPane .formGroup{
+  margin-bottom:11px;
+}
+#registerPane .formControl{
+  padding-top:10px;
+  padding-bottom:10px;
+}
+#registerPane .authHint{
+  padding-bottom:8px;
+}
+
+/* Mobile: use the entire viewport as one independently scrollable access screen */
+@media(max-width:800px){
+  .authScreen{
+    display:block!important;
+    height:100vh!important;
+    height:100dvh!important;
+    padding:0!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+  }
+  .authWrap{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+    overflow:visible!important;
+    border-radius:0!important;
+  }
+  .authIntro{
+    display:none!important;
+  }
+  .authPanel{
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+    overflow:visible!important;
+    padding:28px 22px calc(42px + env(safe-area-inset-bottom))!important;
+    padding-top:calc(28px + env(safe-area-inset-top))!important;
+  }
+  .authTabs{
+    top:calc(8px + env(safe-area-inset-top));
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1551,7 +1680,18 @@ function printView(v){
 
 
 function clearAuthMessages(){["loginMessage","registerMessage"].forEach(id=>{const e=$("#"+id);e.classList.add("hidden");e.textContent=""})}
-function switchAuth(mode){const l=mode==="login";$("#loginTab").classList.toggle("active",l);$("#registerTab").classList.toggle("active",!l);$("#loginPane").classList.toggle("hidden",!l);$("#registerPane").classList.toggle("hidden",l);clearAuthMessages()}
+function switchAuth(mode){
+  const l=mode==="login";
+  $("#loginTab").classList.toggle("active",l);
+  $("#registerTab").classList.toggle("active",!l);
+  $("#loginPane").classList.toggle("hidden",!l);
+  $("#registerPane").classList.toggle("hidden",l);
+  clearAuthMessages();
+  const panel=document.querySelector(".authPanel");
+  const screen=$("#authScreen");
+  if(panel)panel.scrollTop=0;
+  if(screen)screen.scrollTop=0;
+}
 function authMessage(id,text,type){const e=$("#"+id);e.textContent=text;e.className="authMessage "+type}
 function showAuth(mode){$("#authScreen").classList.remove("hidden");switchAuth(mode||"login")}
 function hideAuth(){$("#authScreen").classList.add("hidden")}
