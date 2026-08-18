@@ -912,6 +912,396 @@ body[data-session-state="authenticated"] #authScreen{
   pointer-events:none!important;
 }
 
+
+/* V9.9 — Progress Dashboard */
+.progressHero{
+  display:grid;
+  grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr);
+  gap:16px;
+  padding:22px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:linear-gradient(135deg,var(--surface),var(--accentSoft));
+  box-shadow:var(--shadow);
+}
+.progressHeroMain{
+  min-width:0;
+}
+.progressHeroTop{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+}
+.progressHero h2{
+  margin:6px 0 6px;
+  font-size:25px;
+}
+.progressHero p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.55;
+  max-width:720px;
+}
+.progressLevelBadge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius:999px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  white-space:nowrap;
+  font-size:11px;
+  font-weight:850;
+}
+.progressLevelDot{
+  width:9px;height:9px;border-radius:50%;
+  background:var(--accent);
+}
+.progressTrackWrap{
+  margin-top:22px;
+}
+.progressTrackHeader{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:center;
+  margin-bottom:8px;
+  font-size:12px;
+}
+.progressTrackHeader strong{
+  font-size:13px;
+}
+.progressTrackHeader span{
+  color:var(--muted);
+}
+.progressTrack{
+  height:11px;
+  border-radius:999px;
+  background:var(--surface3);
+  overflow:hidden;
+}
+.progressTrack > div{
+  height:100%;
+  width:0;
+  border-radius:inherit;
+  background:var(--accent);
+  transition:width .35s ease;
+}
+.progressNext{
+  margin-top:9px;
+  color:var(--muted);
+  font-size:11px;
+}
+.progressHeroScore{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  padding:18px;
+  border-radius:16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+}
+.progressHeroScore small{
+  color:var(--muted);
+  font-size:11px;
+}
+.progressHeroScore strong{
+  display:block;
+  font-size:50px;
+  line-height:1;
+  letter-spacing:-.06em;
+  color:var(--accent);
+  margin:6px 0 7px;
+}
+.progressHeroScore span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.progressStats{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  margin-top:14px;
+}
+.progressStat{
+  padding:15px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--surface);
+  box-shadow:var(--shadow);
+}
+.progressStat small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  font-weight:800;
+}
+.progressStat strong{
+  display:block;
+  margin-top:5px;
+  font-size:24px;
+}
+.progressStat span{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+
+.progressContentGrid{
+  display:grid;
+  grid-template-columns:minmax(280px,.72fr) minmax(0,1.28fr);
+  gap:14px;
+  margin-top:14px;
+}
+.progressPanelTitle{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:12px;
+}
+.progressPanelTitle h3{
+  margin:0;
+  font-size:16px;
+}
+.progressPanelTitle p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.categoryProgressList{
+  display:grid;
+  gap:11px;
+}
+.categoryProgressItem{
+  padding:12px;
+  border-radius:13px;
+  background:var(--surface2);
+}
+.categoryProgressHead{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:7px;
+}
+.categoryProgressHead strong{
+  font-size:12px;
+}
+.categoryProgressHead span{
+  font-size:10px;
+  color:var(--muted);
+}
+.categoryBar{
+  height:7px;
+  background:var(--surface3);
+  border-radius:999px;
+  overflow:hidden;
+}
+.categoryBar > div{
+  height:100%;
+  border-radius:999px;
+  background:var(--accent);
+}
+
+.progressCasesList{
+  display:grid;
+  gap:8px;
+}
+.progressCase{
+  display:grid;
+  grid-template-columns:44px minmax(0,1fr) auto;
+  gap:11px;
+  align-items:center;
+  padding:11px 12px;
+  border-radius:13px;
+  background:var(--surface2);
+  border:1px solid transparent;
+}
+.progressCase.done{
+  background:var(--surface2);
+}
+.progressScoreBadge{
+  width:44px;height:44px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:12px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--muted);
+}
+.progressCase.done .progressScoreBadge{
+  color:var(--green);
+  background:var(--greenSoft);
+  border-color:transparent;
+}
+.progressCaseInfo{
+  min-width:0;
+}
+.progressCaseInfo strong{
+  display:block;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.progressCaseInfo small{
+  display:block;
+  color:var(--muted);
+  font-size:10px;
+  margin-top:3px;
+}
+.progressCaseStatus{
+  font-size:10px;
+  padding:6px 8px;
+  border-radius:999px;
+  background:var(--surface);
+  color:var(--muted);
+  border:1px solid var(--border);
+  white-space:nowrap;
+}
+.progressCase.done .progressCaseStatus{
+  color:var(--green);
+  background:var(--greenSoft);
+  border-color:transparent;
+}
+
+.progressDanger{
+  margin-top:18px;
+  padding:16px 18px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:var(--surface);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:16px;
+}
+.progressDangerText strong{
+  display:block;
+  font-size:13px;
+}
+.progressDangerText p{
+  margin:4px 0 0;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.5;
+}
+.btn.dangerOutline{
+  color:var(--red);
+  background:transparent;
+  border-color:var(--border);
+}
+.btn.dangerOutline:hover{
+  background:var(--redSoft);
+}
+
+.confirmOverlay{
+  position:fixed;
+  inset:0;
+  z-index:120;
+  background:rgba(0,0,0,.62);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.confirmDialog{
+  width:min(440px,100%);
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  box-shadow:0 24px 70px rgba(0,0,0,.28);
+  padding:22px;
+}
+.confirmIcon{
+  width:46px;height:46px;
+  border-radius:14px;
+  background:var(--redSoft);
+  color:var(--red);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:900;
+  font-size:18px;
+  margin-bottom:15px;
+}
+.confirmDialog h3{
+  margin:0 0 7px;
+  font-size:20px;
+}
+.confirmDialog p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.55;
+  font-size:12px;
+}
+.confirmActions{
+  display:flex;
+  justify-content:flex-end;
+  gap:9px;
+  margin-top:20px;
+}
+.btn.danger{
+  background:var(--red);
+  border-color:var(--red);
+  color:#fff;
+}
+.btn.danger:hover{
+  opacity:.9;
+}
+
+@media(max-width:1050px){
+  .progressStats{grid-template-columns:1fr 1fr}
+  .progressContentGrid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .progressHero{grid-template-columns:1fr;padding:18px}
+  .progressHeroTop{display:block}
+  .progressLevelBadge{margin-top:12px}
+  .progressHeroScore strong{font-size:42px}
+  .progressDanger{align-items:flex-start;flex-direction:column}
+  .progressDanger .btn{width:100%}
+}
+@media(max-width:500px){
+  .progressStats{grid-template-columns:1fr 1fr}
+  .progressStat{padding:12px}
+  .progressStat strong{font-size:20px}
+  .progressCase{
+    grid-template-columns:40px minmax(0,1fr);
+  }
+  .progressScoreBadge{
+    width:40px;height:40px;
+  }
+  .progressCaseStatus{
+    grid-column:2;
+    justify-self:start;
+  }
+  .confirmActions{
+    flex-direction:column-reverse;
+  }
+  .confirmActions .btn{
+    width:100%;
+  }
+}
+@media print{
+  .progressDanger,.confirmOverlay{display:none!important}
+  .progressHero,.progressStat,.progressContentGrid .card{
+    box-shadow:none!important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1028,7 +1418,7 @@ body[data-session-state="authenticated"] #authScreen{
             </button>
           </div>
         </div>
-        <button class="btn" id="resetBtn">Reiniciar progreso</button>
+        
         <button class="btn" id="themeDesktop">◐ Tema</button>
       </div>
     </div>
@@ -1086,10 +1476,96 @@ body[data-session-state="authenticated"] #authScreen{
     </section>
 
     <section class="view" id="view-progress">
-      <div class="sectionHead"><div><h2>Mi progreso</h2><p>Los resultados se guardan localmente en este navegador cuando está permitido.</p></div><button class="btn" id="printProgress">Imprimir progreso</button></div>
-      <div class="progressGrid">
-        <div class="card"><div class="kicker">Progreso acumulado</div><div class="bigScore" id="progressXP">0</div><div class="rank"><strong id="progressLevel">Explorer</strong><div id="progressSummary" style="color:var(--muted);margin-top:5px"></div></div></div>
-        <div class="card"><h3>Sales Plays</h3><div class="list" id="progressList"></div></div>
+      <div class="sectionHead">
+        <div>
+          <h2>Mi progreso</h2>
+          <p>Revise su avance general, desempeño por categoría y resultados de cada Sales Play.</p>
+        </div>
+        <button class="btn" id="printProgress">Imprimir progreso</button>
+      </div>
+
+      <div class="progressHero">
+        <div class="progressHeroMain">
+          <div class="progressHeroTop">
+            <div>
+              <div class="kicker">Ruta de aprendizaje</div>
+              <h2 id="progressGreeting">Su avance comercial</h2>
+              <p>Complete Sales Plays de distintas familias Oracle para fortalecer discovery, lectura de contexto y calidad del siguiente paso.</p>
+            </div>
+            <div class="progressLevelBadge">
+              <span class="progressLevelDot"></span>
+              <span id="progressLevel">Explorer</span>
+            </div>
+          </div>
+
+          <div class="progressTrackWrap">
+            <div class="progressTrackHeader">
+              <strong id="progressPctLabel">0% completado</strong>
+              <span id="progressCountLabel">0 de 15 Sales Plays</span>
+            </div>
+            <div class="progressTrack"><div id="progressMainBar"></div></div>
+            <div class="progressNext" id="progressNextLevel">Complete su primer Sales Play para comenzar.</div>
+          </div>
+        </div>
+
+        <div class="progressHeroScore">
+          <small>Puntos acumulados</small>
+          <strong id="progressXP">0</strong>
+          <span id="progressScoreCaption">Promedio 0/100</span>
+        </div>
+      </div>
+
+      <div class="progressStats">
+        <div class="progressStat">
+          <small>Completados</small>
+          <strong id="progressCompletedStat">0</strong>
+          <span>Sales Plays finalizados</span>
+        </div>
+        <div class="progressStat">
+          <small>Pendientes</small>
+          <strong id="progressPendingStat">15</strong>
+          <span>Por completar</span>
+        </div>
+        <div class="progressStat">
+          <small>Promedio</small>
+          <strong id="progressAverageStat">0</strong>
+          <span>Puntos por caso</span>
+        </div>
+        <div class="progressStat">
+          <small>Mejor resultado</small>
+          <strong id="progressBestStat">—</strong>
+          <span id="progressBestLabel">Aún sin resultados</span>
+        </div>
+      </div>
+
+      <div class="progressContentGrid">
+        <div class="card">
+          <div class="progressPanelTitle">
+            <div>
+              <h3>Avance por categoría</h3>
+              <p>Distribución de práctica en el portafolio.</p>
+            </div>
+          </div>
+          <div class="categoryProgressList" id="categoryProgressList"></div>
+        </div>
+
+        <div class="card">
+          <div class="progressPanelTitle">
+            <div>
+              <h3>Detalle de Sales Plays</h3>
+              <p>Mejor puntaje registrado por caso.</p>
+            </div>
+          </div>
+          <div class="progressCasesList" id="progressList"></div>
+        </div>
+      </div>
+
+      <div class="progressDanger">
+        <div class="progressDangerText">
+          <strong>Gestión de progreso</strong>
+          <p>Puede borrar sus resultados y comenzar nuevamente. Esta acción afecta únicamente al usuario que tiene la sesión iniciada.</p>
+        </div>
+        <button class="btn dangerOutline" id="resetProgressBtn">Reiniciar mi progreso</button>
       </div>
     </section>
   </main>
@@ -1717,12 +2193,62 @@ function xp(){return Object.values(state.scores).reduce((a,b)=>a+Number(b||0),0)
 function completed(){return Object.keys(state.scores).length}
 function pct(){return cases.length?Math.round(completed()/cases.length*100):0}
 
+function getNextLevelInfo(totalXP){
+  if(totalXP<250)return["Opportunity Hunter",250];
+  if(totalXP<550)return["Portfolio Seller",550];
+  if(totalXP<850)return["Oracle Cloud & Tech Advisor",850];
+  if(totalXP<1200)return["Oracle Portfolio Challenger",1200];
+  return["Nivel máximo",1200];
+}
+
 function updateStats(){
- const x=xp(),d=completed(),p=pct(),lvl=levelInfo()[0];
- $("#metricCases").textContent=cases.length;$("#metricDone").textContent=d;$("#metricXP").textContent=x;$("#metricLevel").textContent=lvl;
- $("#sidePct").textContent=p+"%";$("#sideBar").style.width=p+"%";$("#sideCases").textContent=d+" de "+cases.length+" casos";
- $("#progressXP").textContent=x;$("#progressLevel").textContent=lvl;
- const avg=d?Math.round(x/d):0;$("#progressSummary").textContent="Promedio: "+avg+"/100 · "+d+"/"+cases.length+" casos";
+ const x=xp();
+ const d=completed();
+ const p=pct();
+ const lvl=levelInfo()[0];
+ const avg=d?Math.round(x/d):0;
+ const pending=Math.max(0,cases.length-d);
+ const values=Object.values(state.scores).map(Number).filter(v=>!isNaN(v));
+ const best=values.length?Math.max.apply(null,values):null;
+ const bestCase=best!==null?cases.find(c=>Number(state.scores[c.id])===best):null;
+ const next=getNextLevelInfo(x);
+
+ $("#metricCases").textContent=cases.length;
+ $("#metricDone").textContent=d;
+ $("#metricXP").textContent=x;
+ $("#metricLevel").textContent=lvl;
+
+ $("#sidePct").textContent=p+"%";
+ $("#sideBar").style.width=p+"%";
+ $("#sideCases").textContent=d+" de "+cases.length+" casos";
+
+ if($("#progressXP"))$("#progressXP").textContent=x;
+ if($("#progressLevel"))$("#progressLevel").textContent=lvl;
+ if($("#progressMainBar"))$("#progressMainBar").style.width=p+"%";
+ if($("#progressPctLabel"))$("#progressPctLabel").textContent=p+"% completado";
+ if($("#progressCountLabel"))$("#progressCountLabel").textContent=d+" de "+cases.length+" Sales Plays";
+ if($("#progressCompletedStat"))$("#progressCompletedStat").textContent=d;
+ if($("#progressPendingStat"))$("#progressPendingStat").textContent=pending;
+ if($("#progressAverageStat"))$("#progressAverageStat").textContent=avg;
+ if($("#progressScoreCaption"))$("#progressScoreCaption").textContent="Promedio "+avg+"/100";
+ if($("#progressBestStat"))$("#progressBestStat").textContent=best!==null?best:"—";
+ if($("#progressBestLabel"))$("#progressBestLabel").textContent=bestCase?bestCase.title:"Aún sin resultados";
+
+ if($("#progressGreeting") && state.currentUser){
+   const first=(state.currentUser.name||state.currentUser.username||"").trim().split(/\s+/)[0];
+   $("#progressGreeting").textContent=first ? "Su avance, "+first : "Su avance comercial";
+ }
+
+ if($("#progressNextLevel")){
+   if(x>=1200){
+     $("#progressNextLevel").textContent="Ha alcanzado el nivel más alto de la ruta comercial.";
+   }else if(d===0){
+     $("#progressNextLevel").textContent="Complete su primer Sales Play para comenzar.";
+   }else{
+     $("#progressNextLevel").textContent="Le faltan "+Math.max(0,next[1]-x)+" puntos para "+next[0]+".";
+   }
+ }
+
  renderProgress();
 }
 function setTheme(t){state.theme=t;document.documentElement.setAttribute("data-theme",t);setStored("osp-theme",t)}
@@ -1778,9 +2304,37 @@ function renderCheat(){
  $("#cheatBody").innerHTML=cheatRows.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join("")+'</tr>').join("");
 }
 function renderProgress(){
- $("#progressList").innerHTML=cases.map(c=>{
-   const has=Object.prototype.hasOwnProperty.call(state.scores,c.id),s=has?state.scores[c.id]:"—";
-   return '<div class="item"><div class="itemIcon">'+s+'</div><div><strong>'+c.title+'</strong><small>'+(has?'Completado':'Pendiente')+' · '+c.category+'</small></div></div>';
+ const list=$("#progressList");
+ const categories=$("#categoryProgressList");
+ if(!list || !categories)return;
+
+ const sortedCases=cases.slice().sort((a,b)=>{
+   const aDone=Object.prototype.hasOwnProperty.call(state.scores,a.id);
+   const bDone=Object.prototype.hasOwnProperty.call(state.scores,b.id);
+   if(aDone!==bDone)return aDone?-1:1;
+   if(aDone && bDone)return Number(state.scores[b.id])-Number(state.scores[a.id]);
+   return a.title.localeCompare(b.title);
+ });
+
+ list.innerHTML=sortedCases.map(c=>{
+   const has=Object.prototype.hasOwnProperty.call(state.scores,c.id);
+   const s=has?Number(state.scores[c.id]):null;
+   return '<div class="progressCase '+(has?'done':'')+'">'+
+     '<div class="progressScoreBadge">'+(has?s:'—')+'</div>'+
+     '<div class="progressCaseInfo"><strong>'+c.title+'</strong><small>'+c.category+' · '+c.level+'</small></div>'+
+     '<span class="progressCaseStatus">'+(has?'Completado':'Pendiente')+'</span>'+
+   '</div>';
+ }).join("");
+
+ const cats=Array.from(new Set(cases.map(c=>c.category)));
+ categories.innerHTML=cats.map(cat=>{
+   const catCases=cases.filter(c=>c.category===cat);
+   const done=catCases.filter(c=>Object.prototype.hasOwnProperty.call(state.scores,c.id)).length;
+   const percent=catCases.length?Math.round(done/catCases.length*100):0;
+   return '<div class="categoryProgressItem">'+
+     '<div class="categoryProgressHead"><strong>'+cat+'</strong><span>'+done+' / '+catCases.length+'</span></div>'+
+     '<div class="categoryBar"><div style="width:'+percent+'%"></div></div>'+
+   '</div>';
  }).join("");
 }
 
@@ -2084,6 +2638,31 @@ function restorePageScroll(){
   document.body.style.overflowX="hidden";
 }
 
+
+function openResetConfirm(){
+  const modal=$("#resetConfirmModal");
+  if(modal){
+    modal.classList.remove("hidden");
+    document.body.style.overflow="hidden";
+  }
+}
+function closeResetConfirm(){
+  const modal=$("#resetConfirmModal");
+  if(modal){
+    modal.classList.add("hidden");
+    restorePageScroll();
+  }
+}
+function resetCurrentUserProgress(){
+  state.scores={};
+  saveScores();
+  renderRecommended();
+  renderCases();
+  updateStats();
+  closeResetConfirm();
+  go("progress");
+}
+
 function init(){
  restorePageScroll();
  $("#loginTab").onclick=()=>switchAuth("login");$("#registerTab").onclick=()=>switchAuth("register");$("#loginSubmit").onclick=doLogin;$("#registerSubmit").onclick=doRegister;
@@ -2102,9 +2681,13 @@ function init(){
  $("#themeDesktop").onclick=toggleTheme;$("#themeMobile").onclick=toggleTheme;$("#continueBtn").onclick=()=>{
    const next=cases.find(c=>!Object.prototype.hasOwnProperty.call(state.scores,c.id))||cases[0];openRole(next.id);
  };
- $("#resetBtn").onclick=()=>{if(confirm("¿Desea borrar únicamente su progreso de Sales Plays?")){state.scores={};saveScores();renderRecommended();renderCases();updateStats()}};
  $("#closeRole").onclick=closeRole;$("#nextRound").onclick=nextRole;
- $("#printCheat").onclick=()=>printView("cheat");$("#printProgress").onclick=()=>printView("progress");
+ $("#printCheat").onclick=()=>printView("cheat");
+ $("#printProgress").onclick=()=>printView("progress");
+ $("#resetProgressBtn").onclick=openResetConfirm;
+ $("#cancelResetProgress").onclick=closeResetConfirm;
+ $("#confirmResetProgress").onclick=resetCurrentUserProgress;
+ $("#resetConfirmModal").onclick=function(e){if(e.target===this)closeResetConfirm()};
  renderAcademy();renderPortfolio();renderCheat();renderQuick();applySidebarState();
  const hasSession=loadSession();
 
@@ -2128,5 +2711,18 @@ function init(){
 }
 init();
 </script>
+
+<div class="confirmOverlay hidden" id="resetConfirmModal" role="dialog" aria-modal="true" aria-labelledby="resetConfirmTitle">
+  <div class="confirmDialog">
+    <div class="confirmIcon">!</div>
+    <h3 id="resetConfirmTitle">¿Reiniciar su progreso?</h3>
+    <p>Se eliminarán todos sus puntajes y los Sales Plays volverán a aparecer como pendientes. Esta acción no elimina su cuenta ni afecta a otros usuarios.</p>
+    <div class="confirmActions">
+      <button class="btn" id="cancelResetProgress">Cancelar</button>
+      <button class="btn danger" id="confirmResetProgress">Sí, reiniciar mi progreso</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
