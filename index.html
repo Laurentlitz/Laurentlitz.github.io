@@ -1428,6 +1428,70 @@ body[data-session-state="authenticated"] #authScreen{
   }
 }
 
+
+/* V9.13 — root-level permanent sidebar background */
+@media(min-width:861px){
+
+  html{
+    background:
+      linear-gradient(
+        to right,
+        var(--nav) 0,
+        var(--nav) var(--sidebar-w),
+        var(--bg) var(--sidebar-w),
+        var(--bg) 100%
+      ) fixed!important;
+    min-height:100%!important;
+  }
+
+  html[data-sidebar="collapsed"]{
+    background:
+      linear-gradient(
+        to right,
+        var(--nav) 0,
+        var(--nav) var(--sidebar-w-collapsed),
+        var(--bg) var(--sidebar-w-collapsed),
+        var(--bg) 100%
+      ) fixed!important;
+  }
+
+  body{
+    background:transparent!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+  }
+
+  body::before{
+    display:none!important;
+  }
+
+  .sidebar{
+    background:var(--nav)!important;
+    height:100vh!important;
+    height:100dvh!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+    bottom:auto!important;
+  }
+
+  .main{
+    background:var(--bg)!important;
+    min-height:100vh!important;
+    min-height:100dvh!important;
+  }
+}
+
+@media(max-width:860px){
+  html,
+  html[data-sidebar="collapsed"]{
+    background:var(--bg)!important;
+  }
+
+  body{
+    background:var(--bg)!important;
+  }
+}
+
 </style>
 </head>
 <body>
