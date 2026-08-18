@@ -1595,6 +1595,17 @@ body[data-session-state="authenticated"] #authScreen{
   </div>
 </div>
 
+<div class="confirmOverlay hidden" id="resetConfirmModal" role="dialog" aria-modal="true" aria-labelledby="resetConfirmTitle">
+  <div class="confirmDialog">
+    <div class="confirmIcon">!</div>
+    <h3 id="resetConfirmTitle">¿Reiniciar su progreso?</h3>
+    <p>Se eliminarán todos sus puntajes y los Sales Plays volverán a aparecer como pendientes. Esta acción no elimina su cuenta ni afecta a otros usuarios.</p>
+    <div class="confirmActions">
+      <button class="btn" id="cancelResetProgress">Cancelar</button>
+      <button class="btn danger" id="confirmResetProgress">Sí, reiniciar mi progreso</button>
+    </div>
+  </div>
+
 <script>
 const cases = [
 {
@@ -2678,16 +2689,25 @@ function init(){
  });
  $$(".navBtn,.bottomNav button").forEach(b=>b.onclick=()=>go(b.dataset.view));
  $$("[data-goto]").forEach(b=>b.onclick=()=>go(b.dataset.goto));
- $("#themeDesktop").onclick=toggleTheme;$("#themeMobile").onclick=toggleTheme;$("#continueBtn").onclick=()=>{
+ if($("#themeDesktop"))$("#themeDesktop").onclick=toggleTheme;
+ if($("#themeMobile"))$("#themeMobile").onclick=toggleTheme;
+ if($("#continueBtn"))$("#continueBtn").onclick=()=>{
    const next=cases.find(c=>!Object.prototype.hasOwnProperty.call(state.scores,c.id))||cases[0];openRole(next.id);
  };
  $("#closeRole").onclick=closeRole;$("#nextRound").onclick=nextRole;
  $("#printCheat").onclick=()=>printView("cheat");
  $("#printProgress").onclick=()=>printView("progress");
- $("#resetProgressBtn").onclick=openResetConfirm;
- $("#cancelResetProgress").onclick=closeResetConfirm;
- $("#confirmResetProgress").onclick=resetCurrentUserProgress;
- $("#resetConfirmModal").onclick=function(e){if(e.target===this)closeResetConfirm()};
+ const resetProgressBtn=$("#resetProgressBtn");
+ const cancelResetProgress=$("#cancelResetProgress");
+ const confirmResetProgress=$("#confirmResetProgress");
+ const resetConfirmModal=$("#resetConfirmModal");
+
+ if(resetProgressBtn)resetProgressBtn.onclick=openResetConfirm;
+ if(cancelResetProgress)cancelResetProgress.onclick=closeResetConfirm;
+ if(confirmResetProgress)confirmResetProgress.onclick=resetCurrentUserProgress;
+ if(resetConfirmModal)resetConfirmModal.onclick=function(e){
+   if(e.target===this)closeResetConfirm();
+ };
  renderAcademy();renderPortfolio();renderCheat();renderQuick();applySidebarState();
  const hasSession=loadSession();
 
@@ -2709,19 +2729,19 @@ function init(){
    showAuth("login");
  }
 }
-init();
+
+try{
+  init();
+}catch(err){
+  console.error("Error de inicialización:",err);
+  const loginMessage=document.querySelector("#loginMessage");
+  if(loginMessage){
+    loginMessage.textContent="Se produjo un error al iniciar la aplicación: "+err.message;
+    loginMessage.className="authMessage error";
+  }
+}
 </script>
 
-<div class="confirmOverlay hidden" id="resetConfirmModal" role="dialog" aria-modal="true" aria-labelledby="resetConfirmTitle">
-  <div class="confirmDialog">
-    <div class="confirmIcon">!</div>
-    <h3 id="resetConfirmTitle">¿Reiniciar su progreso?</h3>
-    <p>Se eliminarán todos sus puntajes y los Sales Plays volverán a aparecer como pendientes. Esta acción no elimina su cuenta ni afecta a otros usuarios.</p>
-    <div class="confirmActions">
-      <button class="btn" id="cancelResetProgress">Cancelar</button>
-      <button class="btn danger" id="confirmResetProgress">Sí, reiniciar mi progreso</button>
-    </div>
-  </div>
 </div>
 
 </body>
