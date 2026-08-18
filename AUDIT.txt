@@ -1,0 +1,71 @@
+ORACLE SALES PLAY ACADEMY V10 — AUDITORÍA PROFUNDA
+
+- Sales Plays: OK
+- Decisiones totales: OK
+- 4 alternativas por decisión: OK
+- Popup final fuera del modal de reset: OK
+- Popup final HTML: OK
+- Popup invocado al terminar: OK
+- Puntaje final: OK
+- Fortalezas: OK
+- Recomendaciones: OK
+- Mensaje de cierre específico: OK
+- Duración del intento: OK
+- Integridad visible: OK
+- Respuestas aleatorias: OK
+- Sin puntaje durante el caso: OK
+- Sin revelar opción óptima durante el caso: OK
+- Sin feedback cualitativo inmediato: OK
+- Metadatos best/partial/risky fuera del dataset: OK
+- Firma de resultados: OK
+- Hash de ruta de respuestas: OK
+- Historial de intentos: OK
+- Detección de manipulación: OK
+- Detección de velocidad anormal: OK
+- JavaScript válido: OK
+- Sesgo de longitud promedio <= 1.15: OK
+- Diferencia visual media entre opciones <= 25%: OK
+- Browser: carga sin errores: OK
+- Browser: home visible: OK
+- Browser: roleplay visible: OK
+- Browser: sin reveal por round: OK
+- Browser: popup final visible: OK
+- Browser: score visible: OK
+- Browser: recomendaciones presentes: OK
+- Browser: cierre presente: OK
+- Browser: integridad presente: OK
+- Browser: navegación a progreso: OK
+- Browser: sin errores JS finales: OK
+
+MÉTRICAS DE DIFICULTAD
+- Ratio longitud óptima/distractores antes: 2.001
+- Ratio longitud óptima/distractores V10: 1.022
+- Máximo ratio V10: 1.513
+- Diferencia visual media max-min / max: 0.249
+
+BROWSER TEST
+{
+  "load_errors": [],
+  "auth_visible": true,
+  "home_visible": true,
+  "role_visible": true,
+  "role_meta": "Decisión 1 de 5",
+  "role_meta_no_points": true,
+  "no_best_reveal": true,
+  "no_round_learn_reveal": true,
+  "popup_visible": true,
+  "score": "78",
+  "recommendations": 3,
+  "strengths": 1,
+  "closing": true,
+  "integrity": true,
+  "progress_visible": true,
+  "final_errors": []
+}
+Browser error: None
+
+DISTRIBUCIÓN DE LONGITUD DE LA RESPUESTA ÓPTIMA
+- Óptima más larga: 27 de 75
+- Óptima más corta: 32 de 75
+- Óptima intermedia: 16 de 75
+- No existe un patrón consistente de “la más larga es la correcta”.
